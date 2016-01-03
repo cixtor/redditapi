@@ -43,6 +43,41 @@ func (r *Reddit) Authorize(username string, password string) {
 	r.Password = password
 }
 
+func (r *Reddit) Token() (Session, error) {
+	token, err := r.TokenFromFile()
+
+	if err != nil {
+		return r.TokenFromAPI()
+	}
+
+	return token, nil
+}
+
+func (r *Reddit) TokenFilepath() string {
+	return "/tmp/redditapi.json"
+}
+
+func (r *Reddit) TokenFromFile() (Session, error) {
+	var token Session
+
+	filepath := r.TokenFilepath()
+	file, err := os.Open(filepath)
+
+	if err != nil {
+		return token, err
+	}
+
+	if err := json.NewDecoder(file).Decode(&token); err != nil {
+		return token, err
+	}
+
+	if r.HasExpired(token) {
+		return token, errors.New("Token has expired")
+	}
+
+	return token, nil
+}
+
 func (r *Reddit) TokenFromAPI() (Session, error) {
 	var token Session
 
@@ -84,5 +119,13 @@ func (r *Reddit) TokenFromAPI() (Session, error) {
 		return Session{}, errors.New(fmt.Sprintf("(%d) %s", token.Code, token.Message))
 	}
 
+	file, _ := os.Create(r.TokenFilepath())
+	result, _ := json.Marshal(token)
+	file.Write(result)
+
 	return token, nil
+}
+
+func (r *Reddit) HasExpired(token Session) bool {
+	return (int(time.Now().Unix()) - token.CreatedAt) >= token.ExpiresIn
 }
