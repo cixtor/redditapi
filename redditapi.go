@@ -11,6 +11,10 @@ import (
 	"time"
 )
 
+const BASIC_API = "https://www.reddit.com/api/v1/"
+const OAUTH_API = "https://oauth.reddit.com/api/v1/"
+const USER_AGENT = "RedditAPI/0.1 by cixtor (+github.com/cixtor/redditapi)"
+
 type Reddit struct {
 	Client    string
 	Secret    string
@@ -19,18 +23,8 @@ type Reddit struct {
 	UserAgent string
 }
 
-type Session struct {
-	Code        int    `json:"error,omitempty"`
-	Message     string `json:"message,omitempty"`
-	AccessToken string `json:"access_token"`
-	TokenType   string `json:"token_type"`
-	CreatedAt   int    `json:"created_at"`
-	ExpiresIn   int    `json:"expires_in"`
-	Scope       string `json:"scope"`
-}
-
 func New() *Reddit {
-	return &Reddit{}
+	return &Reddit{UserAgent: USER_AGENT}
 }
 
 func (r *Reddit) Configure(client string, secret string) {
@@ -41,6 +35,10 @@ func (r *Reddit) Configure(client string, secret string) {
 func (r *Reddit) Authorize(username string, password string) {
 	r.Username = username
 	r.Password = password
+}
+
+func (r *Reddit) SetUserAgent(unique string) {
+	r.UserAgent = unique
 }
 
 func (r *Reddit) Token() (Session, error) {
@@ -55,6 +53,10 @@ func (r *Reddit) Token() (Session, error) {
 
 func (r *Reddit) TokenFilepath() string {
 	return "/tmp/redditapi.json"
+}
+
+func (r *Reddit) HasExpired(token Session) bool {
+	return (int(time.Now().Unix()) - token.CreatedAt) >= token.ExpiresIn
 }
 
 func (r *Reddit) TokenFromFile() (Session, error) {
@@ -126,6 +128,35 @@ func (r *Reddit) TokenFromAPI() (Session, error) {
 	return token, nil
 }
 
-func (r *Reddit) HasExpired(token Session) bool {
-	return (int(time.Now().Unix()) - token.CreatedAt) >= token.ExpiresIn
+func (r *Reddit) Request(method string, action string, output interface{}) error {
+	token, err := r.Token()
+
+	if err != nil {
+		return err
+	}
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, OAUTH_API+action, nil)
+
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Pragma", "no-cache")
+	req.Header.Set("Cache-Control", "no-cache")
+	req.Header.Set("Upgrade-Insecure-Requests", "1")
+	req.Header.Set("Accept-Language", "en-US,en;q=0.8")
+	req.Header.Set("Accept", "text/html,application/xhtml+xml,*/*;q=0.8")
+	req.Header.Set("Authorization", token.TokenType+"\x20"+token.AccessToken)
+	req.Header.Set("User-Agent", r.UserAgent)
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	return json.NewDecoder(resp.Body).Decode(&output)
 }
