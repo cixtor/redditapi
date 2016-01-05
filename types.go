@@ -1,14 +1,6 @@
 package redditapi
 
-type Session struct {
-	Code        int    `json:"error"`
-	Message     string `json:"message"`
-	AccessToken string `json:"access_token"`
-	TokenType   string `json:"token_type"`
-	CreatedAt   int    `json:"created_at"`
-	ExpiresIn   int    `json:"expires_in"`
-	Scope       string `json:"scope"`
-}
+import "encoding/json"
 
 type Account struct {
 	ID                      string `json:"id"`
@@ -16,8 +8,6 @@ type Account struct {
 	Over18                  bool   `json:"over_18"`
 	LinkKarma               int    `json:"link_karma"`
 	CommentKarma            int    `json:"comment_karma"`
-	Created                 int    `json:"created"`
-	CreatedUtc              int    `json:"created_utc"`
 	GoldCreddits            int    `json:"gold_creddits"`
 	GoldExpiration          string `json:"gold_expiration"`
 	HasMail                 bool   `json:"has_mail"`
@@ -32,7 +22,9 @@ type Account struct {
 	IsSuspended             bool   `json:"is_suspended"`
 	SuspensionExpirationUtc string `json:"suspension_expiration_utc"`
 
-	Features AccountFeatures `json:"features"`
+	Created    json.Number     `json:"created"`
+	CreatedUtc json.Number     `json:"created_utc"`
+	Features   AccountFeatures `json:"features"`
 }
 
 type AccountFeatures struct {

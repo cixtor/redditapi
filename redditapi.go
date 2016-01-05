@@ -23,6 +23,16 @@ type Reddit struct {
 	UserAgent string
 }
 
+type Session struct {
+	Code        int    `json:"error"`
+	Message     string `json:"message"`
+	AccessToken string `json:"access_token"`
+	TokenType   string `json:"token_type"`
+	CreatedAt   int    `json:"created_at"`
+	ExpiresIn   int    `json:"expires_in"`
+	Scope       string `json:"scope"`
+}
+
 func New() *Reddit {
 	return &Reddit{UserAgent: USER_AGENT}
 }
@@ -91,19 +101,21 @@ func (r *Reddit) TokenFromAPI() (Session, error) {
 	params.Add("password", r.Password)
 
 	req, err := http.NewRequest("POST",
-		"https://www.reddit.com/api/v1/access_token",
+		BASIC_API+"access_token",
 		bytes.NewBufferString(params.Encode()))
-
-	req.Header.Set("Pragma", "no-cache")
-	req.Header.Set("Upgrade-Insecure-Requests", "1")
-	req.Header.Set("Accept-Language", "en-US,en;q=0.8")
-	req.Header.Set("Accept", "text/html,application/xhtml+xml,*/*;q=0.8")
-	req.Header.Set("Cache-Control", "no-cache")
-	req.Header.Set("User-Agent", r.UserAgent)
 
 	if err != nil {
 		return token, err
 	}
+
+	req.SetBasicAuth(r.Client, r.Secret)
+
+	req.Header.Set("Pragma", "no-cache")
+	req.Header.Set("Cache-Control", "no-cache")
+	req.Header.Set("Upgrade-Insecure-Requests", "1")
+	req.Header.Set("Accept-Language", "en-US,en;q=0.8")
+	req.Header.Set("Accept", "text/html,application/xhtml+xml,*/*;q=0.8")
+	req.Header.Set("User-Agent", r.UserAgent)
 
 	resp, err := client.Do(req)
 
@@ -121,6 +133,7 @@ func (r *Reddit) TokenFromAPI() (Session, error) {
 		return Session{}, errors.New(fmt.Sprintf("(%d) %s", token.Code, token.Message))
 	}
 
+	token.CreatedAt = int(time.Now().Unix())
 	file, _ := os.Create(r.TokenFilepath())
 	result, _ := json.Marshal(token)
 	file.Write(result)

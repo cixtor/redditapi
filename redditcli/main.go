@@ -3,17 +3,21 @@ package main
 import (
 	"github.com/cixtor/redditapi"
 	"log"
+	"os"
 )
 
 func main() {
 	cli := redditapi.New()
 
-	if _, err := cli.Credentials(); err != nil {
+	cli.Configure(os.Getenv("REDDIT_CLIENT"), os.Getenv("REDDIT_SECRET"))
+	cli.Authorize(os.Getenv("REDDIT_USERNAME"), os.Getenv("REDDIT_PASSWORD"))
+
+	out, err := cli.Me()
+
+	if err != nil {
 		log.Println(err)
-		log.Println("Info: https://www.reddit.com/prefs/apps")
-		log.Println("Docs: https://www.reddit.com/wiki/api")
 		return
 	}
 
-	log.Printf("%#v\n", cli)
+	log.Printf("%#v\n", out)
 }
