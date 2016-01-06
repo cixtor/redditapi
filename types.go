@@ -75,3 +75,18 @@ type AccountSeoComments struct {
 	Variant      string `json:"variant"`
 	ExperimentID int    `json:"experiment_id"`
 }
+
+type UserList struct {
+	Kind string       `json:"kind"`
+	Data UserListData `json:"data"`
+}
+
+type UserListData struct {
+	Children []Friend `json:"children"`
+}
+
+type Friend struct {
+	ID   string      `json:"id"`
+	Name string      `json:"name"`
+	Date json.Number `json:"date"`
+}

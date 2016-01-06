@@ -15,3 +15,15 @@ func (r *Reddit) Me() (Account, error) {
 
 	return output, nil
 }
+
+func (r *Reddit) MeFriends() (UserList, error) {
+	var output UserList
+
+	err := r.Request("GET", "me/friends", &output)
+
+	if err != nil {
+		return output, err
+	}
+
+	return output, nil
+}
