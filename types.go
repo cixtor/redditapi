@@ -90,3 +90,27 @@ type Friend struct {
 	Name string      `json:"name"`
 	Date json.Number `json:"date"`
 }
+
+type TrophyList struct {
+	Kind string     `json:"kind"`
+	Data TrophyData `json:"data"`
+}
+
+type TrophyData struct {
+	Trophies []TrophyInfo `json:"trophies"`
+}
+
+type TrophyInfo struct {
+	Kind string `json:"kind"`
+	Data Trophy `json:"data"`
+}
+
+type Trophy struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Icon70      string `json:"icon_70"`
+	AwardID     string `json:"award_id"`
+	Description string `json:"description"`
+	Icon40      string `json:"icon_40"`
+	URL         string `json:"url"`
+}
