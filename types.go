@@ -114,3 +114,14 @@ type Trophy struct {
 	Icon40      string `json:"icon_40"`
 	URL         string `json:"url"`
 }
+
+type KarmaList struct {
+	Kind string  `json:"kind"`
+	Data []Karma `json:"data"`
+}
+
+type Karma struct {
+	SubReddit    string `json:"sr"`
+	LinkKarma    int    `json:"link_karma"`
+	CommentKarma int    `json:"comment_karma"`
+}
