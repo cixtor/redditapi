@@ -91,6 +91,74 @@ type Friend struct {
 	Date json.Number `json:"date"`
 }
 
+type KarmaList struct {
+	Kind string  `json:"kind"`
+	Data []Karma `json:"data"`
+}
+
+type Karma struct {
+	SubReddit    string `json:"sr"`
+	LinkKarma    int    `json:"link_karma"`
+	CommentKarma int    `json:"comment_karma"`
+}
+
+type Preferences struct {
+	DefaultThemeSubreddit  string   `json:"default_theme_sr"`
+	ThreadedMessages       bool     `json:"threaded_messages"`
+	HideDowns              bool     `json:"hide_downs"`
+	ShowStylesheets        bool     `json:"show_stylesheets"`
+	ShowLinkFlair          bool     `json:"show_link_flair"`
+	CredditAutorenew       bool     `json:"creddit_autorenew"`
+	ShowTrending           bool     `json:"show_trending"`
+	PrivateFeeds           bool     `json:"private_feeds"`
+	MonitorMentions        bool     `json:"monitor_mentions"`
+	ShowSnoovatar          bool     `json:"show_snoovatar"`
+	Research               bool     `json:"research"`
+	IgnoreSuggestedSort    bool     `json:"ignore_suggested_sort"`
+	NumComments            int      `json:"num_comments"`
+	Clickgadget            bool     `json:"clickgadget"`
+	UseGlobalDefaults      bool     `json:"use_global_defaults"`
+	LabelNsfw              bool     `json:"label_nsfw"`
+	AffiliateLinks         bool     `json:"affiliate_links"`
+	Over18                 bool     `json:"over_18"`
+	EmailMessages          bool     `json:"email_messages"`
+	LiveOrangereds         bool     `json:"live_orangereds"`
+	HighlightControversial bool     `json:"highlight_controversial"`
+	NoProfanity            bool     `json:"no_profanity"`
+	DomainDetails          bool     `json:"domain_details"`
+	CollapseLeftBar        bool     `json:"collapse_left_bar"`
+	Lang                   string   `json:"lang"`
+	HideUps                bool     `json:"hide_ups"`
+	PublicServerSeconds    bool     `json:"public_server_seconds"`
+	AllowClicktracking     bool     `json:"allow_clicktracking"`
+	HideFromRobots         bool     `json:"hide_from_robots"`
+	Compress               bool     `json:"compress"`
+	StoreVisits            bool     `json:"store_visits"`
+	ThreadedModmail        bool     `json:"threaded_modmail"`
+	MinLinkScore           int      `json:"min_link_score"`
+	MediaPreview           string   `json:"media_preview"`
+	EnableDefaultThemes    bool     `json:"enable_default_themes"`
+	ContentLangs           []string `json:"content_langs"`
+	ShowPromote            bool     `json:"show_promote"`
+	MinCommentScore        int      `json:"min_comment_score"`
+	PublicVotes            bool     `json:"public_votes"`
+	Organic                bool     `json:"organic"`
+	CollapseReadMessages   bool     `json:"collapse_read_messages"`
+	ShowFlair              bool     `json:"show_flair"`
+	MarkMessagesRead       bool     `json:"mark_messages_read"`
+	ForceHTTPS             bool     `json:"force_https"`
+	HideAds                bool     `json:"hide_ads"`
+	Beta                   bool     `json:"beta"`
+	Newwindow              bool     `json:"newwindow"`
+	Numsites               int      `json:"numsites"`
+	LegacySearch           bool     `json:"legacy_search"`
+	Media                  string   `json:"media"`
+	ShowGoldExpiration     bool     `json:"show_gold_expiration"`
+	HighlightNewComments   bool     `json:"highlight_new_comments"`
+	DefaultCommentSort     string   `json:"default_comment_sort"`
+	HideLocationbar        bool     `json:"hide_locationbar"`
+}
+
 type TrophyList struct {
 	Kind string     `json:"kind"`
 	Data TrophyData `json:"data"`
@@ -113,15 +181,4 @@ type Trophy struct {
 	Description string `json:"description"`
 	Icon40      string `json:"icon_40"`
 	URL         string `json:"url"`
-}
-
-type KarmaList struct {
-	Kind string  `json:"kind"`
-	Data []Karma `json:"data"`
-}
-
-type Karma struct {
-	SubReddit    string `json:"sr"`
-	LinkKarma    int    `json:"link_karma"`
-	CommentKarma int    `json:"comment_karma"`
 }
