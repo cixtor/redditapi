@@ -11,8 +11,8 @@ import (
 	"time"
 )
 
+const OAUTH_API = "https://oauth.reddit.com"
 const BASIC_API = "https://www.reddit.com/api/v1/"
-const OAUTH_API = "https://oauth.reddit.com/api/v1/"
 const USER_AGENT = "RedditAPI/0.1 by cixtor (+github.com/cixtor/redditapi)"
 
 type Reddit struct {
