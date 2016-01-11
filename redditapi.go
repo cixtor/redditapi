@@ -1,10 +1,12 @@
 package redditapi
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -141,18 +143,18 @@ func (r *Reddit) TokenFromAPI() (Session, error) {
 	return token, nil
 }
 
-func (r *Reddit) Request(method string, action string, output interface{}) error {
+func (r *Reddit) Request(method string, action string, params []string) (io.Reader, error) {
 	token, err := r.Token()
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	client := &http.Client{}
 	req, err := http.NewRequest(method, OAUTH_API+action, nil)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	req.Header.Set("Pragma", "no-cache")
@@ -166,10 +168,57 @@ func (r *Reddit) Request(method string, action string, output interface{}) error
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	defer resp.Body.Close()
 
-	return json.NewDecoder(resp.Body).Decode(&output)
+	var buf bytes.Buffer
+	(&buf).ReadFrom(resp.Body)
+
+	return &buf, nil
+}
+
+func (r *Reddit) RequestString(method string, action string, params []string) string {
+	var output string
+
+	stream, err := r.Request(method, action, nil)
+
+	if err != nil {
+		return ""
+	}
+
+	scanner := bufio.NewScanner(stream)
+
+	for scanner.Scan() {
+		output += scanner.Text() + "\n"
+	}
+
+	return output
+}
+
+func (r *Reddit) RequestJson(method string, action string, params []string, output interface{}) error {
+	stream, err := r.Request(method, action, nil)
+
+	if err != nil {
+		return err
+	}
+
+	return json.NewDecoder(stream).Decode(&output)
+}
+
+func (r *Reddit) Get(action string, params []string) string {
+	return r.RequestString("GET", action, params)
+}
+
+func (r *Reddit) Post(action string, params []string) string {
+	return r.RequestString("POST", action, params)
+}
+
+func (r *Reddit) GetJson(action string, params []string, output interface{}) error {
+	return r.RequestJson("GET", action, params, &output)
+}
+
+func (r *Reddit) PostJson(action string, params []string, output interface{}) error {
+	return r.RequestJson("POST", action, params, &output)
 }
