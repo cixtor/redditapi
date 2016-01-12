@@ -7,6 +7,7 @@ type Endpoints interface {
 	MePrefs() (Preferences, error)
 	MeTrophies() (TrophyList, error)
 	NeedsCaptcha() (bool, error)
+	NewCaptcha() string
 }
 
 func (r *Reddit) Me() (Account, error) {
@@ -43,4 +44,8 @@ func (r *Reddit) NeedsCaptcha() (bool, error) {
 	var output bool
 	err := r.GetJson("/api/needs_captcha", nil, &output)
 	return output, err
+}
+
+func (r *Reddit) NewCaptcha() string {
+	return r.Get("/api/new_captcha", nil)
 }
