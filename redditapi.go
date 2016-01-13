@@ -179,19 +179,21 @@ func (r *Reddit) Request(method string, action string, params []string) (io.Read
 	return &buf, nil
 }
 
-func (r *Reddit) RequestString(method string, action string, params []string) string {
-	var output string
+func (r *Reddit) RequestString(method string, action string, params []string) []byte {
+	var chunk []byte
+	var output []byte
 
 	stream, err := r.Request(method, action, nil)
 
 	if err != nil {
-		return ""
+		return nil
 	}
 
 	scanner := bufio.NewScanner(stream)
 
 	for scanner.Scan() {
-		output += scanner.Text() + "\n"
+		chunk = scanner.Bytes()
+		output = append(output, chunk...)
 	}
 
 	return output
@@ -207,11 +209,11 @@ func (r *Reddit) RequestJson(method string, action string, params []string, outp
 	return json.NewDecoder(stream).Decode(&output)
 }
 
-func (r *Reddit) Get(action string, params []string) string {
+func (r *Reddit) Get(action string, params []string) []byte {
 	return r.RequestString("GET", action, params)
 }
 
-func (r *Reddit) Post(action string, params []string) string {
+func (r *Reddit) Post(action string, params []string) []byte {
 	return r.RequestString("POST", action, params)
 }
 
