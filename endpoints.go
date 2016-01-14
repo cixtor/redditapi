@@ -1,5 +1,7 @@
 package redditapi
 
+import "io"
+
 type Endpoints interface {
 	Me() (Account, error)
 	MeFriends() (UserList, error)
@@ -7,7 +9,8 @@ type Endpoints interface {
 	MePrefs() (Preferences, error)
 	MeTrophies() (TrophyList, error)
 	NeedsCaptcha() (bool, error)
-	NewCaptcha() string
+	NewCaptcha() []byte
+	CaptchaIden() (io.Reader, error)
 }
 
 func (r *Reddit) Me() (Account, error) {
@@ -46,6 +49,10 @@ func (r *Reddit) NeedsCaptcha() (bool, error) {
 	return output, err
 }
 
-func (r *Reddit) NewCaptcha() string {
+func (r *Reddit) NewCaptcha() []byte {
 	return r.Get("/api/new_captcha", nil)
+}
+
+func (r *Reddit) CaptchaIden(iden string) (io.Reader, error) {
+	return r.Request("GET", "/captcha/"+iden, nil)
 }
