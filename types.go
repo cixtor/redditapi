@@ -182,3 +182,56 @@ type Trophy struct {
 	Icon40      string `json:"icon_40"`
 	URL         string `json:"url"`
 }
+type Comment struct {
+	Json CommentJson `json:"json"`
+}
+
+type CommentJson struct {
+	Errors []string    `json:"errors"`
+	Data   CommentData `json:"data"`
+}
+
+type CommentData struct {
+	Things []CommentThings `json:"things"`
+}
+
+type CommentThings struct {
+	Kind string           `json:"kind"`
+	Data CommentThingData `json:"data"`
+}
+
+type CommentThingData struct {
+	SubredditID         string   `json:"subreddit_id"`
+	BannedBy            string   `json:"banned_by"`
+	RemovalReason       string   `json:"removal_reason"`
+	LinkID              string   `json:"link_id"`
+	Likes               bool     `json:"likes"`
+	Replies             string   `json:"replies"`
+	UserReports         []string `json:"user_reports"`
+	Saved               bool     `json:"saved"`
+	ID                  string   `json:"id"`
+	Gilded              int      `json:"gilded"`
+	Archived            bool     `json:"archived"`
+	ReportReasons       []string `json:"report_reasons"`
+	Author              string   `json:"author"`
+	ParentID            string   `json:"parent_id"`
+	Score               int      `json:"score"`
+	ApprovedBy          string   `json:"approved_by"`
+	Controversiality    int      `json:"controversiality"`
+	Body                string   `json:"body"`
+	Edited              bool     `json:"edited"`
+	AuthorFlairCSSClass string   `json:"author_flair_css_class"`
+	Downs               int      `json:"downs"`
+	BodyHTML            string   `json:"body_html"`
+	Subreddit           string   `json:"subreddit"`
+	Name                string   `json:"name"`
+	ScoreHidden         bool     `json:"score_hidden"`
+	Stickied            bool     `json:"stickied"`
+	Created             float64  `json:"created"`
+	AuthorFlairText     string   `json:"author_flair_text"`
+	CreatedUtc          float64  `json:"created_utc"`
+	Distinguished       string   `json:"distinguished"`
+	ModReports          []string `json:"mod_reports"`
+	NumReports          int      `json:"num_reports"`
+	Ups                 int      `json:"ups"`
+}

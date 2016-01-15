@@ -17,6 +17,8 @@ const OAUTH_API = "https://oauth.reddit.com"
 const BASIC_API = "https://www.reddit.com/api/v1/"
 const USER_AGENT = "RedditAPI/0.1 by cixtor (+github.com/cixtor/redditapi)"
 
+type Params map[string]string
+
 type Reddit struct {
 	Client    string
 	Secret    string
@@ -143,7 +145,7 @@ func (r *Reddit) TokenFromAPI() (Session, error) {
 	return token, nil
 }
 
-func (r *Reddit) Request(method string, action string, params []string) (io.Reader, error) {
+func (r *Reddit) Request(method string, action string, params Params) (io.Reader, error) {
 	token, err := r.Token()
 
 	if err != nil {
@@ -151,7 +153,8 @@ func (r *Reddit) Request(method string, action string, params []string) (io.Read
 	}
 
 	client := &http.Client{}
-	req, err := http.NewRequest(method, OAUTH_API+action, nil)
+	urlStr, body := r.RequestUrl(method, action, params)
+	req, err := http.NewRequest(method, urlStr, body)
 
 	if err != nil {
 		return nil, err
@@ -179,11 +182,33 @@ func (r *Reddit) Request(method string, action string, params []string) (io.Read
 	return &buf, nil
 }
 
-func (r *Reddit) RequestString(method string, action string, params []string) []byte {
+func (r *Reddit) RequestUrl(method string, action string, params Params) (string, io.Reader) {
+	var urlParams string
+	var body = url.Values{}
+	var urlStr string = OAUTH_API + action
+
+	for key, value := range params {
+		body.Set(key, value)
+	}
+
+	urlParams = body.Encode()
+
+	if method == "GET" {
+		if urlParams != "" {
+			urlStr += "?" + urlParams
+		}
+
+		return urlStr, nil
+	}
+
+	return urlStr, bytes.NewBufferString(urlParams)
+}
+
+func (r *Reddit) RequestString(method string, action string, params Params) []byte {
 	var chunk []byte
 	var output []byte
 
-	stream, err := r.Request(method, action, nil)
+	stream, err := r.Request(method, action, params)
 
 	if err != nil {
 		return nil
@@ -199,8 +224,8 @@ func (r *Reddit) RequestString(method string, action string, params []string) []
 	return output
 }
 
-func (r *Reddit) RequestJson(method string, action string, params []string, output interface{}) error {
-	stream, err := r.Request(method, action, nil)
+func (r *Reddit) RequestJson(method string, action string, params Params, output interface{}) error {
+	stream, err := r.Request(method, action, params)
 
 	if err != nil {
 		return err
@@ -209,18 +234,18 @@ func (r *Reddit) RequestJson(method string, action string, params []string, outp
 	return json.NewDecoder(stream).Decode(&output)
 }
 
-func (r *Reddit) Get(action string, params []string) []byte {
+func (r *Reddit) Get(action string, params Params) []byte {
 	return r.RequestString("GET", action, params)
 }
 
-func (r *Reddit) Post(action string, params []string) []byte {
+func (r *Reddit) Post(action string, params Params) []byte {
 	return r.RequestString("POST", action, params)
 }
 
-func (r *Reddit) GetJson(action string, params []string, output interface{}) error {
+func (r *Reddit) GetJson(action string, params Params, output interface{}) error {
 	return r.RequestJson("GET", action, params, &output)
 }
 
-func (r *Reddit) PostJson(action string, params []string, output interface{}) error {
+func (r *Reddit) PostJson(action string, params Params, output interface{}) error {
 	return r.RequestJson("POST", action, params, &output)
 }

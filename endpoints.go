@@ -11,6 +11,7 @@ type Endpoints interface {
 	NeedsCaptcha() (bool, error)
 	NewCaptcha() []byte
 	CaptchaIden() (io.Reader, error)
+	Comment() (Comment, error)
 }
 
 func (r *Reddit) Me() (Account, error) {
@@ -55,4 +56,14 @@ func (r *Reddit) NewCaptcha() []byte {
 
 func (r *Reddit) CaptchaIden(iden string) (io.Reader, error) {
 	return r.Request("GET", "/captcha/"+iden, nil)
+}
+
+func (r *Reddit) Comment(parent string, text string) (Comment, error) {
+	var output Comment
+	err := r.PostJson("/api/comment", map[string]string{
+		"api_type": "json",
+		"parent":   parent,
+		"text":     text,
+	}, &output)
+	return output, err
 }
