@@ -10,8 +10,9 @@ type Endpoints interface {
 	MeTrophies() (TrophyList, error)
 	NeedsCaptcha() (bool, error)
 	NewCaptcha() []byte
-	CaptchaIden() (io.Reader, error)
-	Comment() (Comment, error)
+	CaptchaIden(string) (io.Reader, error)
+	Comment(string, string) (Comment, error)
+	Delete(string) error
 }
 
 func (r *Reddit) Me() (Account, error) {
@@ -66,4 +67,8 @@ func (r *Reddit) Comment(parent string, text string) (Comment, error) {
 		"text":     text,
 	}, &output)
 	return output, err
+}
+
+func (r *Reddit) Delete(id string) error {
+	return r.PostJson("/api/del", map[string]string{"id": id}, nil)
 }
