@@ -183,12 +183,14 @@ type Trophy struct {
 	URL         string `json:"url"`
 }
 type Comment struct {
-	Json CommentJson `json:"json"`
+	Json      CommentJson `json:"json"`
+	ErrorMsg  string      `json:"message"`
+	ErrorCode int         `json:"error"`
 }
 
 type CommentJson struct {
-	Errors []string    `json:"errors"`
 	Data   CommentData `json:"data"`
+	Errors []string    `json:"errors"`
 }
 
 type CommentData struct {
@@ -201,30 +203,29 @@ type CommentThings struct {
 }
 
 type CommentThingData struct {
+	ID                  string   `json:"id"`
+	Name                string   `json:"name"`
+	LinkID              string   `json:"link_id"`
+	ParentID            string   `json:"parent_id"`
 	SubredditID         string   `json:"subreddit_id"`
+	Edited              bool     `json:"edited"`
 	BannedBy            string   `json:"banned_by"`
 	RemovalReason       string   `json:"removal_reason"`
-	LinkID              string   `json:"link_id"`
 	Likes               bool     `json:"likes"`
 	Replies             string   `json:"replies"`
 	UserReports         []string `json:"user_reports"`
 	Saved               bool     `json:"saved"`
-	ID                  string   `json:"id"`
 	Gilded              int      `json:"gilded"`
 	Archived            bool     `json:"archived"`
 	ReportReasons       []string `json:"report_reasons"`
 	Author              string   `json:"author"`
-	ParentID            string   `json:"parent_id"`
 	Score               int      `json:"score"`
 	ApprovedBy          string   `json:"approved_by"`
 	Controversiality    int      `json:"controversiality"`
 	Body                string   `json:"body"`
-	Edited              bool     `json:"edited"`
 	AuthorFlairCSSClass string   `json:"author_flair_css_class"`
-	Downs               int      `json:"downs"`
 	BodyHTML            string   `json:"body_html"`
 	Subreddit           string   `json:"subreddit"`
-	Name                string   `json:"name"`
 	ScoreHidden         bool     `json:"score_hidden"`
 	Stickied            bool     `json:"stickied"`
 	Created             float64  `json:"created"`
@@ -233,5 +234,6 @@ type CommentThingData struct {
 	Distinguished       string   `json:"distinguished"`
 	ModReports          []string `json:"mod_reports"`
 	NumReports          int      `json:"num_reports"`
+	Downs               int      `json:"downs"`
 	Ups                 int      `json:"ups"`
 }

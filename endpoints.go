@@ -13,6 +13,7 @@ type Endpoints interface {
 	CaptchaIden(string) (io.Reader, error)
 	Comment(string, string) (Comment, error)
 	Delete(string) error
+	Edit(string, string) (Comment, error)
 }
 
 func (r *Reddit) Me() (Account, error) {
@@ -69,6 +70,16 @@ func (r *Reddit) Comment(parent string, text string) (Comment, error) {
 	return output, err
 }
 
-func (r *Reddit) Delete(id string) error {
-	return r.PostJson("/api/del", map[string]string{"id": id}, nil)
+func (r *Reddit) Delete(thing string) error {
+	return r.PostJson("/api/del", map[string]string{"id": thing}, nil)
+}
+
+func (r *Reddit) Edit(thing string, text string) (Comment, error) {
+	var output Comment
+	err := r.PostJson("/api/editusertext", map[string]string{
+		"api_type": "json",
+		"thing_id": thing,
+		"text":     text,
+	}, &output)
+	return output, err
 }
