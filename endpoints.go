@@ -14,6 +14,7 @@ type Endpoints interface {
 	Comment(string, string) (Comment, error)
 	Delete(string) error
 	Edit(string, string) (Comment, error)
+	Hide(thing string) error
 }
 
 func (r *Reddit) Me() (Account, error) {
@@ -82,4 +83,8 @@ func (r *Reddit) Edit(thing string, text string) (Comment, error) {
 		"text":     text,
 	}, &output)
 	return output, err
+}
+
+func (r *Reddit) Hide(thing string) error {
+	return r.PostJson("/api/hide", map[string]string{"id": thing}, nil)
 }
