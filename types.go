@@ -237,3 +237,73 @@ type CommentThingData struct {
 	Downs               int      `json:"downs"`
 	Ups                 int      `json:"ups"`
 }
+
+type Info struct {
+	Kind string   `json:"kind"`
+	Data InfoData `json:"data"`
+}
+
+type InfoData struct {
+	Modhash  string         `json:"modhash"`
+	After    string         `json:"after"`
+	Before   string         `json:"before"`
+	Children []InfoChildren `json:"children"`
+}
+
+type InfoChildren struct {
+	Kind string           `json:"kind"`
+	Data InfoChildrenData `json:"data"`
+}
+
+type InfoChildrenData struct {
+	ContestMode         bool     `json:"contest_mode"`
+	BannedBy            string   `json:"banned_by"`
+	Domain              string   `json:"domain"`
+	Subreddit           string   `json:"subreddit"`
+	SelftextHTML        string   `json:"selftext_html"`
+	Selftext            string   `json:"selftext"`
+	Likes               int      `json:"likes"`
+	SuggestedSort       string   `json:"suggested_sort"`
+	UserReports         []string `json:"user_reports"`
+	Saved               bool     `json:"saved"`
+	ID                  string   `json:"id"`
+	Gilded              int      `json:"gilded"`
+	Clicked             bool     `json:"clicked"`
+	ReportReasons       string   `json:"report_reasons"`
+	Author              string   `json:"author"`
+	Name                string   `json:"name"`
+	Score               int      `json:"score"`
+	ApprovedBy          string   `json:"approved_by"`
+	Over18              bool     `json:"over_18"`
+	RemovalReason       string   `json:"removal_reason"`
+	Hidden              bool     `json:"hidden"`
+	Thumbnail           string   `json:"thumbnail"`
+	SubredditID         string   `json:"subreddit_id"`
+	Edited              bool     `json:"edited"`
+	LinkFlairCSSClass   string   `json:"link_flair_css_class"`
+	AuthorFlairCSSClass string   `json:"author_flair_css_class"`
+	Downs               int      `json:"downs"`
+	ModReports          []string `json:"mod_reports"`
+	Archived            bool     `json:"archived"`
+	IsSelf              bool     `json:"is_self"`
+	HideScore           bool     `json:"hide_score"`
+	Spoiler             bool     `json:"spoiler"`
+	Permalink           string   `json:"permalink"`
+	Locked              bool     `json:"locked"`
+	Stickied            bool     `json:"stickied"`
+	Created             float64  `json:"created"`
+	URL                 string   `json:"url"`
+	AuthorFlairText     string   `json:"author_flair_text"`
+	Quarantine          bool     `json:"quarantine"`
+	Title               string   `json:"title"`
+	CreatedUtc          float64  `json:"created_utc"`
+	LinkFlairText       string   `json:"link_flair_text"`
+	Distinguished       string   `json:"distinguished"`
+	NumComments         int      `json:"num_comments"`
+	Visited             bool     `json:"visited"`
+	NumReports          int      `json:"num_reports"`
+	Ups                 int      `json:"ups"`
+
+	// SecureMedia         interface{} `json:"secure_media"`
+	// Media               interface{} `json:"media"`
+}

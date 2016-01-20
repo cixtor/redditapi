@@ -14,8 +14,9 @@ type Endpoints interface {
 	Comment(string, string) (Comment, error)
 	Delete(string) error
 	Edit(string, string) (Comment, error)
-	Hide(thing string) error
-	Unhide(thing string) error
+	Hide(string) error
+	Unhide(string) error
+	Info(string, string) (Info, error)
 }
 
 func (r *Reddit) Me() (Account, error) {
@@ -92,4 +93,10 @@ func (r *Reddit) Hide(thing string) error {
 
 func (r *Reddit) Unhide(thing string) error {
 	return r.PostJson("/api/unhide", map[string]string{"id": thing}, nil)
+}
+
+func (r *Reddit) Info(thing string, url string) (Info, error) {
+	var output Info
+	err := r.GetJson("/api/info", map[string]string{"id": thing, "url": url}, &output)
+	return output, err
 }
