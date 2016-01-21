@@ -17,6 +17,7 @@ type Endpoints interface {
 	Hide(string) error
 	Unhide(string) error
 	Info(string, string) (Info, error)
+	Lock(string) error
 }
 
 func (r *Reddit) Me() (Account, error) {
@@ -99,4 +100,8 @@ func (r *Reddit) Info(thing string, url string) (Info, error) {
 	var output Info
 	err := r.GetJson("/api/info", map[string]string{"id": thing, "url": url}, &output)
 	return output, err
+}
+
+func (r *Reddit) Lock(thing string) error {
+	return r.PostJson("/api/lock", map[string]string{"id": thing}, nil)
 }
