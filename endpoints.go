@@ -18,6 +18,7 @@ type Endpoints interface {
 	Unhide(string) error
 	Info(string, string) (Info, error)
 	Lock(string) error
+	Unlock(string) error
 }
 
 func (r *Reddit) Me() (Account, error) {
@@ -104,4 +105,8 @@ func (r *Reddit) Info(thing string, url string) (Info, error) {
 
 func (r *Reddit) Lock(thing string) error {
 	return r.PostJson("/api/lock", map[string]string{"id": thing}, nil)
+}
+
+func (r *Reddit) Unlock(thing string) error {
+	return r.PostJson("/api/unlock", map[string]string{"id": thing}, nil)
 }
