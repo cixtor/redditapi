@@ -19,6 +19,7 @@ type Endpoints interface {
 	Info(string, string) (Info, error)
 	Lock(string) error
 	Unlock(string) error
+	MarkNSFW(string) error
 }
 
 func (r *Reddit) Me() (Account, error) {
@@ -109,4 +110,8 @@ func (r *Reddit) Lock(thing string) error {
 
 func (r *Reddit) Unlock(thing string) error {
 	return r.PostJson("/api/unlock", map[string]string{"id": thing}, nil)
+}
+
+func (r *Reddit) MarkNSFW(thing string) error {
+	return r.PostJson("/api/marknsfw", map[string]string{"id": thing}, nil)
 }
